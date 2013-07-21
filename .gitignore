@@ -1,13 +1,17 @@
 # Compiled Object files
-*.slo
-*.lo
 *.o
 
 # Compiled Dynamic libraries
+*.dll
 *.so
-*.dylib
 
 # Compiled Static libraries
-*.lai
-*.la
 *.a
+
+# exclude eclipse project files
+.cproject
+.project
+.settings
+
+# exclude binaries
+*.exe
