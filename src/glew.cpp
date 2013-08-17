@@ -6,10 +6,9 @@
  */
 
 
-#include "../include/stubber.h"
+#include "stubber/stubber.h"
 
 #include <GL/glew.h>
 
-#include <iostream>
 
 

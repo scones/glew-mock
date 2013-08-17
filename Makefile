@@ -1,27 +1,30 @@
 CC             = g++
 INCLUDES       = -IC:/msys/include
-CFLAGS         = $(INCLUDES) -O3 -c -Wall -pedantic -std=c++11 -fexec-charset=UTF-8 -finput-charset=UTF-8
+CFLAGS         = $(INCLUDES) -O2 -c -Wall -pedantic -std=c++11 -fexec-charset=UTF-8 -finput-charset=UTF-8 -D_GLIBCXX_HAVE_BROKEN_VSWPRINTF
 
 LIB_PATHS      = -LC:/msys/lib
 LIBS           = 
 LDFLAGS        = ${LIB_PATHS} ${LIBS}
 
 
-SOURCES        = \
-	src/glew.cpp \
-	src/stubber.cpp
+find = $(foreach dir,$(1),$(foreach d,$(wildcard $(dir)/*),$(call find,$(d),$(2))) $(wildcard $(dir)/$(strip $(2))))
 
-OBJECTS        = $(SOURCES:.cpp=.o)
+SOURCES_LIB       = $(call find, src, *.cpp)
+OBJECTS_LIB       = $(SOURCES_LIB:.cpp=.o)
+
+
 STATIC_TARGET  = lib/libglew_mock.a
+SHARED_TARGET  = lib/libglew_mock.dll
+
 
 all: $(SOURCES) $(STATIC_TARGET) check $(SHARED_TARGET)
 
 
-$(STATIC_TARGET): $(OBJECTS)
-	ar rcs $@ $(OBJECTS)
+$(STATIC_TARGET): $(OBJECTS_LIB)
+	ar rcs $@ $(OBJECTS_LIB)
 
 
-$(SHARED_TARGET): $(OBJECTS)
+$(SHARED_TARGET): $(OBJECTS_LIB)
 #	$(CC) -shared $(OBJECTS) -o $@ $(LDFLAGS)
 
 
@@ -35,7 +38,7 @@ check: $(STATIC_TARGET)
 
 clean:
 	make -C ./tests clean
-	rm -f $(OBJECTS)
+	rm -f $(OBJECTS_LIB)
 	rm -f $(STATIC_TARGET)
 	rm -f $(SHARED_TARGET)
 	rm -f gmon.out

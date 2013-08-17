@@ -1,32 +1,30 @@
 CC         = g++
 INCLUDES   = -IC:/msys/include
-CFLAGS     = $(INCLUDES) -O0 -c -Wall -pedantic -std=c++11 -fexec-charset=UTF-8 -finput-charset=UTF-8
+CFLAGS     = $(INCLUDES) -O0 -c -Wall -pedantic -std=c++11 -fexec-charset=UTF-8 -finput-charset=UTF-8 -D_GLIBCXX_HAVE_BROKEN_VSWPRINTF
 
 LIB_PATHS  = -L../lib -LC:/msys/lib
-LIBS       = -static -lglew_mock -lgtest_all
+LIBS       = -static -lglfw_mock -lgtest_all -lstub
 LDFLAGS    = ${LIB_PATHS} ${LIBS}
 
+find = $(foreach dir,$(1),$(foreach d,$(wildcard $(dir)/*),$(call find,$(d),$(2))) $(wildcard $(dir)/$(strip $(2))))
 
-SOURCES    = \
-  src/main.cpp\
-  ../src/stubber.cpp
+SOURCES_LIB       = $(call find, src, *.cpp)
+OBJECTS_LIB       = $(SOURCES_LIB:.cpp=.o)
 
-
-OBJECTS    = $(SOURCES:.cpp=.o)
-TARGET     = bin/lib_glfw_mock_tests.exe
+TARGET     = bin/lib_glew_mock_tests.exe
 
 
 all: check
 
 
-check: $(SOURCES) $(TARGET)
+check: $(TARGET)
 	@echo ""
 	./$(TARGET)
 	@echo ""
 
 
-$(TARGET): $(OBJECTS)
-	$(CC) $(OBJECTS) -o $@ $(LDFLAGS)
+$(TARGET): $(OBJECTS_LIB)
+	$(CC) $(OBJECTS_LIB) -o $@ $(LDFLAGS)
 
 
 .cpp.o:
@@ -34,7 +32,7 @@ $(TARGET): $(OBJECTS)
 
 
 clean:
-	rm -f $(OBJECTS)
+	rm -f $(OBJECTS_LIB)
 	rm -f $(TARGET)
 	rm -f gmon.out
 
