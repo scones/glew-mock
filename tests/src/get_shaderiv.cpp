@@ -39,3 +39,26 @@ TEST_F(get_shaderiv_test, has_correct_params) {
   ASSERT_EQ(1, some_param);
 }
 
+
+TEST_F(get_shaderiv_test, has_conditional_params) {
+  s_stub.register_function_parameter_return("glGetShaderiv", "params", 7, stubber::condition(GL_COMPILE_STATUS));
+  int some_param = 3;
+  int some_other_param = 4;
+  glGetShaderiv(1, GL_COMPILE_STATUS, &some_param);
+  glGetShaderiv(1, GL_INFO_LOG_LENGTH, &some_other_param);
+
+  auto iterator = s_stub.function_calls().begin();
+
+  auto first_invocation  = *iterator++;
+  ASSERT_EQ(t_arg(1), first_invocation.param("shader"));
+  ASSERT_EQ(t_arg(GL_COMPILE_STATUS), first_invocation.param("pname"));
+  ASSERT_EQ(t_arg(&some_param), first_invocation.param("params"));
+  ASSERT_EQ(7, some_param);
+
+  auto second_invocation = *iterator++;
+  ASSERT_EQ(t_arg(1), second_invocation.param("shader"));
+  ASSERT_EQ(t_arg(GL_INFO_LOG_LENGTH), second_invocation.param("pname"));
+  ASSERT_EQ(t_arg(&some_other_param), second_invocation.param("params"));
+  ASSERT_EQ(1, some_other_param);
+}
+
