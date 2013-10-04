@@ -8,6 +8,7 @@
 #include "stubber/stubber.h"
 
 #include <GL/glew.h>
+#include <cstring>
 
 
 void glew_mock_get_shader_info_log(GLuint shader, GLsizei maxLength, GLsizei *length, GLchar *infoLog) {
@@ -17,6 +18,8 @@ void glew_mock_get_shader_info_log(GLuint shader, GLsizei maxLength, GLsizei *le
     {"length", t_arg(length)},
     {"infoLog", t_arg(infoLog)}
   });
+  *length = s_stub.get_function_parameter_return<int>("glGetShaderInfoLog", "length");
+  std::strcpy(infoLog, s_stub.get_function_parameter_return<char*>("glGetShaderInfoLog", "infoLog"));
 }
 
 

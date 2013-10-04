@@ -9,7 +9,14 @@
 
 #include <GL/glew.h>
 
-class get_shader_info_log_test : public base_fixture {};
+class get_shader_info_log_test : public base_fixture {
+  void SetUp() {
+    base_fixture::SetUp();
+    s_stub.register_function_parameter_return<int>("glGetShaderInfoLog", "length", 4);
+    char some_param[] = "foo2";
+    s_stub.register_function_parameter_return<char*>("glGetShaderInfoLog", "infoLog", some_param);
+  }
+};
 
 
 TEST_F(get_shader_info_log_test, is_reachable) {
@@ -29,9 +36,11 @@ TEST_F(get_shader_info_log_test, has_correct_params) {
   char info_log[] = "foo";
   glGetShaderInfoLog(1, 2, &length, info_log);
   auto first_invocation = s_stub.function_calls().front();
-  ASSERT_EQ(first_invocation.param("shader"), t_arg(1));
-  ASSERT_EQ(first_invocation.param("maxLength"), t_arg(2));
-  ASSERT_EQ(first_invocation.param("length"), t_arg(&length));
-  ASSERT_EQ(first_invocation.param("infoLog"), t_arg(info_log));
+  ASSERT_EQ(t_arg(1), first_invocation.param("shader"));
+  ASSERT_EQ(t_arg(2), first_invocation.param("maxLength"));
+  ASSERT_EQ(t_arg(&length), first_invocation.param("length"));
+  ASSERT_EQ(t_arg("foo"), first_invocation.param("infoLog"));
+  ASSERT_EQ(std::string("foo2"), std::string(info_log));
+  ASSERT_EQ(4, length);
 }
 

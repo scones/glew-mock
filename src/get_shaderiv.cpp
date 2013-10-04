@@ -17,6 +17,7 @@ void glew_mock_get_shaderiv(GLuint shader, GLenum pname, GLint *params) {
     {"pname", t_arg(pname)},
     {"params", t_arg(params)}
   });
+  *params = s_stub.get_function_parameter_return<int>("glGetShaderiv", "params");
 }
 
 
