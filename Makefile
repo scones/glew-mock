@@ -1,6 +1,6 @@
 CC             = g++
 INCLUDES       = -IC:/msys/include
-CFLAGS         = $(INCLUDES) -O2 -c -Wall -pedantic -std=c++11 -fexec-charset=UTF-8 -finput-charset=UTF-8 -D_GLIBCXX_HAVE_BROKEN_VSWPRINTF -DGLEW_STATIC
+CFLAGS         = $(INCLUDES) -O2 -c -Wall -pedantic -std=c++11 -fexec-charset=UTF-8 -finput-charset=UTF-8 -D_GLIBCXX_HAVE_BROKEN_VSWPRINTF -DGLEW_STATIC -g
 
 LIB_PATHS      = -LC:/msys/lib
 LIBS           = 
