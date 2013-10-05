@@ -44,3 +44,8 @@ TEST_F(get_shader_info_log_test, has_correct_params) {
   ASSERT_EQ(4, length);
 }
 
+TEST_F(get_shader_info_log_test, should_work_with_nullptr_as_third_parameter) {
+  char info_log[] = "foo";
+  glGetShaderInfoLog(1, 2, nullptr, info_log);
+}
+
